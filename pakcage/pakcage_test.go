@@ -132,27 +132,5 @@ func TestCreateSpecificVersion(t *testing.T) {
 	assert.Equal(t, 9, p.Version)
 }
 
-func TestCreatesAllDirectoriesUpToUser(t *testing.T) {
-	teardown := setup()
-	defer teardown()
-
-	p, err := New("foo", "more_awesome")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = p.NewVersion(9)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	str, err := os.Readlink(path.Join(p.Gopkg, "more_awesome.v9"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	assert.Equal(t, path.Join(p.Github, "more_awesome"), str)
-	assert.Equal(t, 9, p.Version)
-}
-
 // TODO go gets previous version
 // TODO does not get v0 when going to v1
