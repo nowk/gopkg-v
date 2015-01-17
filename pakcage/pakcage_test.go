@@ -132,5 +132,18 @@ func TestCreateSpecificVersion(t *testing.T) {
 	assert.Equal(t, 9, p.Version)
 }
 
+func TestVersionedIsADirectoryReturnsError(t *testing.T) {
+	teardown := setup()
+	defer teardown()
+
+	p, err := New("foo", "awesome")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = p.NewVersion(2)
+	assert.Equal(t, "awesome.v2 is a versioned directory", err.Error())
+}
+
 // TODO go gets previous version
 // TODO does not get v0 when going to v1

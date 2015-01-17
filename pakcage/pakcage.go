@@ -3,7 +3,6 @@ package pakcage
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path"
 	"regexp"
 	"strconv"
@@ -92,14 +91,14 @@ func (p *Pakcage) NewVersion(i ...int) error {
 		v = i[0]
 	}
 
+	err := p.unlink(v)
+	if err != nil {
+		return err
+	}
+
 	// no input version or < 0, use the parsed Pakcage version
 	if v < 0 {
 		v = p.Version + 1
-	}
-
-	err := p.unlink()
-	if err != nil {
-		return err
 	}
 
 	err = p.linkVersion(v)
@@ -119,10 +118,21 @@ func (p Pakcage) linkVersion(v int) error {
 
 // unlink unlinks the current version. It will error if path to current version
 // is not a link (is a directory). It will not attempt to unlink a .v-1 version.
-func (p Pakcage) unlink() error {
-	if p.Version < 0 {
+func (p Pakcage) unlink(v int) error {
+	if v < 0 {
 		return nil
 	}
 
-	return exec.Command("unlink", p.gopkgVerURL(p.Version)).Run()
+	link := p.gopkgVerURL(v)
+	_, err := os.Readlink(link)
+	if err != nil {
+		e := err.(*os.PathError)
+		if e.Err.Error() == "no such file or directory" {
+			return nil
+		}
+
+		return fmt.Errorf("%s.v%d is a versioned directory", p.name, v)
+	}
+
+	return os.Remove(link)
 }
