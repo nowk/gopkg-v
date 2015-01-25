@@ -148,13 +148,12 @@ func (p *Pkg) NewVersion(n int) (*version, error) {
 	return v, nil
 }
 
-func (p *Pkg) addVersion(name string) (*version, error) {
-	reg, err := regexp.Compile(`\d+$`)
-	if err != nil {
-		return nil, err
-	}
+var (
+	regN = regexp.MustCompile(`\d+$`)
+)
 
-	nStr := reg.FindString(name)
+func (p *Pkg) addVersion(name string) (*version, error) {
+	nStr := regN.FindString(name)
 	n, err := strconv.ParseInt(nStr, 10, 64)
 	if err != nil {
 		return nil, err
