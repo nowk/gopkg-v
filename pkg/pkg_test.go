@@ -76,7 +76,7 @@ func TestNewVersionCreatesNewLinkToWorkingDir(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := pkg.NewVersion()
+	v, err := pkg.NewVersion(0)
 	assert.Nil(t, err)
 	assert.Equal(t, "awesome.v5", v.Name)
 	assert.Equal(t, 5, v.Version)
@@ -99,7 +99,7 @@ func TestNewVersionUnlinksTheOldVersion(t *testing.T) {
 		t.Fatal(err)
 	}
 	cur := pkg.CurrentVersion()
-	if _, err := pkg.NewVersion(); err != nil {
+	if _, err := pkg.NewVersion(0); err != nil {
 		t.Fatal(err)
 	}
 	assert.Unlink(t, cur.Path)
@@ -116,7 +116,7 @@ func TestNoVersionStartsAt0(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := pkg.NewVersion()
+	v, err := pkg.NewVersion(0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,7 +138,7 @@ func TestNoSourceRepoExist(t *testing.T) {
 	assert.Equal(t, "package foo/bar: no such package", err.Error())
 }
 
-func TestCreateVersionAtN(t *testing.T) {
+func TestCreateVersionSpecificVersion(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
@@ -149,7 +149,7 @@ func TestCreateVersionAtN(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := pkg.NewVersionAt(5)
+	v, err := pkg.NewVersion(5)
 	assert.Nil(t, err)
 	assert.Equal(t, "awesome.v5", v.Name)
 	assert.Equal(t, 5, v.Version)
@@ -157,7 +157,7 @@ func TestCreateVersionAtN(t *testing.T) {
 	assert.Symlink(t, pkg.Source, v.Path)
 }
 
-func TestCreateVersionAtExistingLink(t *testing.T) {
+func TestCreateVersionAtExistingVersion(t *testing.T) {
 	teardown := setup()
 	defer teardown()
 
@@ -168,7 +168,7 @@ func TestCreateVersionAtExistingLink(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := pkg.NewVersionAt(4)
+	v, err := pkg.NewVersion(4)
 	assert.Nil(t, v)
 	assert.Equal(t, "package foo/awesome: is already at version 4", err.Error())
 }

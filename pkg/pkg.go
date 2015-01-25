@@ -104,13 +104,30 @@ func nextVersion(v *version) int {
 	return 0
 }
 
-// NewVersionAt creates a new version at a particular version N.
-// WARNING this does not remove any existing symlinks to the source directory
-func (p *Pkg) NewVersionAt(n int) (*version, error) {
+func (p Pkg) checkVersion(v *version, n int) error {
+	if v == nil {
+		return nil
+	}
+
+	if v.Version == n {
+		return fmt.Errorf("package %s/%s: is already at version %d", p.User,
+			p.Name, v.Version)
+	}
+
+	return nil
+}
+
+// NewVersion creates a new version at the version N. Unlinking the previous
+// version if possible. If N == 0 it will create the version at the current
+// version + 1.
+func (p *Pkg) NewVersion(n int) (*version, error) {
 	cur := p.CurrentVersion()
-	if cur != nil && cur.Version == n {
-		return nil, fmt.Errorf("package %s/%s: is already at version %d", p.User,
-			p.Name, cur.Version)
+	if n == 0 {
+		n = nextVersion(cur)
+	}
+
+	if err := p.checkVersion(cur, n); err != nil {
+		return nil, err
 	}
 
 	dir := fmt.Sprintf("%s.v%d", p.Name, n)
@@ -119,15 +136,7 @@ func (p *Pkg) NewVersionAt(n int) (*version, error) {
 		return nil, err
 	}
 
-	return p.addVersion(dir)
-}
-
-// NewVersion creates a new version at the next version N. It will also unlink
-// the current version so only one active symlink to the source directory
-func (p *Pkg) NewVersion() (*version, error) {
-	cur := p.CurrentVersion()
-
-	v, err := p.NewVersionAt(nextVersion(cur))
+	v, err := p.addVersion(dir)
 	if err != nil {
 		return v, err
 	}
