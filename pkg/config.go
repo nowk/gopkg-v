@@ -1,7 +1,8 @@
 package pkg
 
 import (
-	"flag"
+	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -43,13 +44,25 @@ func ParseArgs(args []string) (*Config, error) {
 }
 
 func parseFlags(args []string, conf *Config) error {
-	if len(args) < 1 {
+	l := len(args)
+	if l < 1 {
 		return ErrInvalidArgumentLength
 	}
 
-	vflag := flag.NewFlagSet("-", flag.ContinueOnError)
-	vflag.IntVar(&conf.Version, "gopkg-version", -1, "")
-	return vflag.Parse(args)
+	if nv := args[0]; nv != "--new-version" {
+		return &ArgError{fmt.Sprintf("flag provided but not defined: %s", nv)}
+	}
+
+	if l == 2 {
+		n, err := strconv.ParseInt(args[1], 10, 64)
+		if err != nil {
+			return err
+		}
+
+		conf.Version = int(n)
+	}
+
+	return nil
 }
 
 func parsePackagePath(str string, conf *Config) error {

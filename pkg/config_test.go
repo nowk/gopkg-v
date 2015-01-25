@@ -1,20 +1,29 @@
 package pkg
 
 import (
-	"gopkg.in/nowk/assert.v2"
+	"gopkg.in/nowk/gopkg-v.v0/pkg/testing/assert"
 	"testing"
 )
 
 func TestParseValidConfig(t *testing.T) {
-	args := []string{"/path/to/bin", "nowk/gopkg-v", "--gopkg-version", "1"}
+	args := []string{"/path/to/bin", "nowk/gopkg-v", "--new-version", "1"}
 	config, err := ParseArgs(args)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 	assert.Equal(t, &Config{
 		User:    "nowk",
 		Name:    "gopkg-v",
 		Version: 1,
+	}, config)
+}
+
+func TestOnlyNewVersionFlag(t *testing.T) {
+	args := []string{"/path/to/bin", "nowk/gopkg-v", "--new-version"}
+	config, err := ParseArgs(args)
+	assert.Nil(t, err)
+	assert.Equal(t, &Config{
+		User:    "nowk",
+		Name:    "gopkg-v",
+		Version: 0,
 	}, config)
 }
 
@@ -41,8 +50,8 @@ func TestArgErrors(t *testing.T) {
 			"invalid arguments length",
 		},
 		{
-			[]string{"/path/to/bin", "nowk/gopkg-v", "--gopkg-versions", "1"},
-			"flag provided but not defined: -gopkg-versions",
+			[]string{"/path/to/bin", "nowk/gopkg-v", "--new-versions", "1"},
+			"flag provided but not defined: --new-versions",
 		},
 	} {
 		_, err := ParseArgs(v.Args)
