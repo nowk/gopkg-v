@@ -5,34 +5,57 @@
 
 <!-- [![GoDoc](https://godoc.org/gopkg.in/nowk/gopkg-v.v0?status.svg)](http://godoc.org/gopkg.in/nowk/gopkg-v.v0) -->
 
-gopkg.in version utility
-
-__*Work In Progress*__
+gopkg.in version utility to help create and manage versions in relation to the working copy.
 
 ---
 
-Sets up symbolic links to your __gopkg.in__ dir to your __github.com__ repo directory. Allowing one to work within a git repo and use the proper import directory structure for gopkg versioning.
+__The Basic Problem__
 
 Working directory looks something like this:
 
     github.com/foo/bar
     github.com/foo/bar/baz
 
-Version directory is symlinked:
-
-    gopkg.in/foo/bar.v1 => github.com/foo/bar
-
-Now you can import subpackages within the version context of your parent package.
+And you need to reference a subpackage, but at version.
 
     package bar
 
     import "gopkg.in/foo/bar.v1/baz"
+
+To do this you need to create a gopkg.in version that is symlinked to your working copy.
+
+    gopkg.in/foo/bar.v1 => github.com/foo/bar
 
 ---
 
 ## Install
 
     go install gopkg.in/nowk/gopkg-v.v0
+
+## Example
+
+Create a new version at the `current version + 1`
+
+    gopkg-v nowk/gopkg-v --new-version
+    // gopkg.in/nowk/gopkg-v.v1 -> github.com/nowk/gopkg-v
+
+again...
+
+    gopkg-v nowk/gopkg-v --new-version
+    // gopkg.in/nowk/gopkg-v.v2 -> github.com/nowk/gopkg-v
+
+* If there is no existing versions, it will start at `v0`
+* It will remove the previous version link, if it is a link. Physical directories will be ignored.
+
+---
+
+Create a new version at a specific version
+
+    gopkg-v nowk/gopkg-v --new-version 3
+    // gopkg.in/nowk/gopkg-v.v3 -> github.com/nowk/gopkg-v
+
+* If `--new-version 0` it will attempt to create at `v0` if there are no existing versions. Else it will create a link at the `current version + 1`.
+
 
 ## License
 
