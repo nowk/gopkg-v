@@ -18,6 +18,12 @@ var (
 	GoPath = os.Getenv("GOPATH")
 )
 
+func init() {
+	if GoPath == "" {
+		panic("$GOPATH is not defined")
+	}
+}
+
 type version struct {
 	// Path is the path to $GOPATH/src/gopkg.in/user/package.vN
 	Path string
