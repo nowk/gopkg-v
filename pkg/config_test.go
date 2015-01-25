@@ -13,7 +13,7 @@ func TestParseValidConfig(t *testing.T) {
 	}
 	assert.Equal(t, &Config{
 		User:    "nowk",
-		Repo:    "gopkg-v",
+		Name:    "gopkg-v",
 		Version: 1,
 	}, config)
 }

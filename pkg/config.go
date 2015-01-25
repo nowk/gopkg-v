@@ -19,8 +19,10 @@ var (
 )
 
 type Config struct {
-	User    string
-	Repo    string
+	User string
+	Name string
+
+	// Version to create new link at
 	Version int
 }
 
@@ -61,8 +63,8 @@ func parsePackagePath(str string, conf *Config) error {
 	}
 
 	conf.User = split[0]
-	conf.Repo = split[1]
-	if conf.User == "" || conf.Repo == "" {
+	conf.Name = split[1]
+	if conf.User == "" || conf.Name == "" {
 		return ErrInvalidPackagePath
 	}
 

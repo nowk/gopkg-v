@@ -47,8 +47,8 @@ type Pkg struct {
 func Open(conf *Config) (*Pkg, error) {
 	pkg := &Pkg{
 		User:   conf.User,
-		Name:   conf.Repo,
-		Source: path.Join(GoPath, GITHUB_PATH, conf.User, conf.Repo),
+		Name:   conf.Name,
+		Source: path.Join(GoPath, GITHUB_PATH, conf.User, conf.Name),
 		Dest:   path.Join(GoPath, GOPKG_PATH, conf.User),
 	}
 

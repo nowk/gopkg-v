@@ -40,7 +40,7 @@ func TestReturnsAParsedPackage(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "awesome",
+		Name: "awesome",
 	})
 	assert.Nil(t, err)
 	assert.Equal(t, "foo", pkg.User)
@@ -71,7 +71,7 @@ func TestNewVersionCreatesNewLinkToWorkingDir(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "awesome",
+		Name: "awesome",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -93,7 +93,7 @@ func TestNewVersionUnlinksTheOldVersion(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "awesome",
+		Name: "awesome",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -111,7 +111,7 @@ func TestNoVersionStartsAt0(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "more_awesome",
+		Name: "more_awesome",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -132,7 +132,7 @@ func TestNoSourceRepoExist(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "bar",
+		Name: "bar",
 	})
 	assert.Nil(t, pkg)
 	assert.Equal(t, "package foo/bar: no such package", err.Error())
@@ -144,7 +144,7 @@ func TestCreateVersionSpecificVersion(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "awesome",
+		Name: "awesome",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -163,7 +163,7 @@ func TestCreateVersionAtExistingVersion(t *testing.T) {
 
 	pkg, err := Open(&Config{
 		User: "foo",
-		Repo: "awesome",
+		Name: "awesome",
 	})
 	if err != nil {
 		t.Fatal(err)
