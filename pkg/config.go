@@ -1,14 +1,21 @@
 package pkg
 
 import (
-	"errors"
 	"flag"
 	"strings"
 )
 
+type ArgError struct {
+	msg string
+}
+
+func (a ArgError) Error() string {
+	return a.msg
+}
+
 var (
-	ErrInvalidPackagePath    = errors.New("invalid package path")
-	ErrInvalidArgumentLength = errors.New("invalid arguments length")
+	ErrInvalidPackagePath    = &ArgError{"invalid package path"}
+	ErrInvalidArgumentLength = &ArgError{"invalid arguments length"}
 )
 
 type Config struct {
