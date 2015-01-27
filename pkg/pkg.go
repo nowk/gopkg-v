@@ -71,12 +71,6 @@ func Open(conf *Config) (*Pkg, error) {
 	return pkg, nil
 }
 
-func isWorkingDir(strPath string) bool {
-	// TODO distinguish between non-symlink and bad paths
-	_, err := os.Readlink(strPath)
-	return err == nil
-}
-
 // CurrentVersion returns the last version in the versions list
 func (p Pkg) CurrentVersion() *version {
 	l := len(p.Versions)
@@ -85,29 +79,6 @@ func (p Pkg) CurrentVersion() *version {
 	}
 
 	return nil
-}
-
-// unlink calls the unlink command to ensure an "unlink" occurs vs doing a
-// straight rm or rmdir
-func unlink(v *version) error {
-	if v == nil {
-		return nil
-	}
-
-	// check if file exists
-	if _, err := os.Readlink(v.Path); err != nil {
-		return nil
-	}
-
-	return exec.Command("unlink", v.Path).Run()
-}
-
-func nextVersion(v *version) int {
-	if v != nil {
-		return v.Version + 1
-	}
-
-	return 0
 }
 
 func (p Pkg) checkVersion(v *version, n int) error {
@@ -201,4 +172,33 @@ func queryVersions(pkg *Pkg) error {
 	}
 
 	return nil
+}
+
+func isWorkingDir(strPath string) bool {
+	// TODO distinguish between non-symlink and bad paths
+	_, err := os.Readlink(strPath)
+	return err == nil
+}
+
+// unlink calls the unlink command to ensure an "unlink" occurs vs doing a
+// straight rm or rmdir
+func unlink(v *version) error {
+	if v == nil {
+		return nil
+	}
+
+	// check if file exists
+	if _, err := os.Readlink(v.Path); err != nil {
+		return nil
+	}
+
+	return exec.Command("unlink", v.Path).Run()
+}
+
+func nextVersion(v *version) int {
+	if v != nil {
+		return v.Version + 1
+	}
+
+	return 0
 }
